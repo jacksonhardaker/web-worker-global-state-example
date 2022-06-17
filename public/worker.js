@@ -4,15 +4,16 @@ onmessage = function ({ data = [] }) {
   const [action, payload] = data;
   console.log({ data });
   switch (action) {
-    case "get":
+    case "get": {
       console.log(`Getting ${payload}`);
-      return this.postMessage(["get", state.get(payload)]);
-    case "set":
+      const key = payload;
+      return this.postMessage(["get", key, state.get(key)]);
+    }
+    case "set": {
       console.log(`Setting ${payload}`);
       const [key, value] = payload;
       state.set(key, value);
-      return this.postMessage(["set", value]);
-    default:
-      return this.postMessage("No Action");
+      return this.postMessage(["set", key, value]);
+    }
   }
 };

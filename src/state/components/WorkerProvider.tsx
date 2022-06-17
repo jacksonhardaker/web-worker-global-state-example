@@ -12,7 +12,7 @@ import { WorkerContext } from "../context";
 
 export const WorkerProvider: FC<PropsWithChildren> = ({ children }) => {
   const [worker, setWorker] = useState<Worker | null>(null);
-  const subscribers = useRef<Dispatch<unknown>[]>([]);
+  const subscribers = useRef<Record<string, Dispatch<unknown>[]>>({});
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.Worker) {
@@ -23,9 +23,9 @@ export const WorkerProvider: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     if (worker) {
       worker.onmessage = ({ data }) => {
-        const [action, payload] = data;
+        const [action, key, value] = data;
         if (action === "set") {
-          subscribers.current.forEach((listener) => listener(payload));
+          subscribers.current[key].forEach((listener) => listener(value));
         }
       };
     }
@@ -46,7 +46,7 @@ export const WorkerProvider: FC<PropsWithChildren> = ({ children }) => {
   );
 
   const subscribe = useCallback((key: string, listener: Dispatch<unknown>) => {
-    subscribers.current.push(listener);
+    subscribers.current[key] = [...(subscribers.current[key] || []), listener];
   }, []);
 
   const value = useMemo(
