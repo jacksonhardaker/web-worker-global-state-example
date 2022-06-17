@@ -1,10 +1,14 @@
 import { createContext, Dispatch } from "react";
 
-export type WorkerContextType = {
+export type Subscribe<T> = (key: string, listener: Dispatch<T>) => void;
+export type Set<T> = (key: string, value: T) => void;
+export type Get = (key: string) => void;
+
+export type WorkerContextType<T = any> = {
   worker: Worker | null;
-  subscribe: (key: string, listener: Dispatch<unknown>) => void;
-  set: (key: string, value: unknown) => void;
-  get: (key: string,) => unknown;
+  subscribe: Subscribe<T>;
+  set: Set<T>;
+  get: Get;
 };
 
 export const WorkerContext = createContext<WorkerContextType | null>(null);

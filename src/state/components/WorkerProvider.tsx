@@ -9,10 +9,13 @@ import {
   useCallback,
 } from "react";
 import { WorkerContext } from "../context";
+import type { Set, Get, Subscribe, WorkerContextType } from "../context";
 
-export const WorkerProvider: FC<PropsWithChildren> = ({ children }) => {
+export const WorkerProvider = <T extends unknown>({
+  children,
+}: PropsWithChildren) => {
   const [worker, setWorker] = useState<Worker | null>(null);
-  const subscribers = useRef<Record<string, Dispatch<unknown>[]>>({});
+  const subscribers = useRef<Record<string, Dispatch<T>[]>>({});
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.Worker) {
@@ -31,25 +34,25 @@ export const WorkerProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   }, [worker]);
 
-  const get = useCallback(
-    (key: string) => {
+  const get = useCallback<Get>(
+    (key) => {
       worker?.postMessage(["get", key]);
     },
     [worker]
   );
 
-  const set = useCallback(
-    (key: string, value: unknown) => {
+  const set = useCallback<Set<T>>(
+    (key, value) => {
       worker?.postMessage(["set", [key, value]]);
     },
     [worker]
   );
 
-  const subscribe = useCallback((key: string, listener: Dispatch<unknown>) => {
+  const subscribe = useCallback<Subscribe<T>>((key, listener) => {
     subscribers.current[key] = [...(subscribers.current[key] || []), listener];
   }, []);
 
-  const value = useMemo(
+  const value = useMemo<WorkerContextType<T>>(
     () => ({
       worker,
       subscribe,

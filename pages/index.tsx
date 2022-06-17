@@ -11,7 +11,7 @@ const ChildComponent = () => {
 
 const Home: NextPage = () => {
   const [count, setCount] = useState("count", 0);
-  console.log({ count });
+
   return (
     <div className={styles.container}>
       <Head>

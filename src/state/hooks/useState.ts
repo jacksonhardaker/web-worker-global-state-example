@@ -3,32 +3,23 @@ import {
   useState as useBaseState,
   useCallback,
   SetStateAction,
+  Dispatch,
 } from "react";
 import { useWorker } from "./useWorker";
 
-export const useState = (key: string, initialValue: unknown) => {
-  const { subscribe, set, get } = useWorker() || {};
-  const [state, setBaseState] = useBaseState<unknown>();
+export const useState = <T extends unknown>(key: string, initialValue: T) => {
+  const { subscribe, set, get } = useWorker<T>() || {};
+  const [state, setBaseState] = useBaseState<T>(initialValue);
 
   useEffect(() => {
-    const existingValue = get?.(key);
-    console.log({ existingValue });
-    if (existingValue) {
-      setBaseState(existingValue);
-    } else {
-      set?.(key, initialValue);
-    }
-  }, [get, initialValue, key, set, setBaseState]);
-
-  useEffect(() => {
-    subscribe?.(key, (data: unknown) => {
+    subscribe?.(key, (data) => {
       setBaseState(data);
     });
   }, [subscribe, key, setBaseState]);
 
   const setState = useCallback(
-    (value: SetStateAction<unknown>) => {
-      if (typeof value === "function") {
+    (value: SetStateAction<T>) => {
+      if (value instanceof Function) {
         set?.(key, value(state));
       } else {
         set?.(key, value);
@@ -37,5 +28,7 @@ export const useState = (key: string, initialValue: unknown) => {
     [set, key, state]
   );
 
-  return [state, setState];
+  const value: [T, Dispatch<SetStateAction<T>>] = [state, setState];
+
+  return value;
 };
