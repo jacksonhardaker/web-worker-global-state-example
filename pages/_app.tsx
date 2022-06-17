@@ -1,8 +1,14 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
-}
+import "../styles/globals.css";
+import { WorkerProvider } from "../src/state/components/WorkerProvider";
 
-export default MyApp
+const App = ({ Component, pageProps }: AppProps) => {
+  return (
+    <WorkerProvider>
+      <Component {...pageProps} />
+    </WorkerProvider>
+  );
+};
+
+export default App;
