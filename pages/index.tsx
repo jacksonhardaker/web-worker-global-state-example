@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "../src/state/hooks/useState";
+import { useState } from "../src/state/v1/hooks/useState";
 import styles from "../styles/Home.module.css";
 import { State } from "./_app";
 

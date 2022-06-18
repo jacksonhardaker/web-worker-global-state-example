@@ -1,7 +1,7 @@
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import { WorkerProvider } from "../src/state/components/WorkerProvider";
+import { WorkerProvider } from "../src/state/v1/components/WorkerProvider";
 
 export type State = {
   count: number;
