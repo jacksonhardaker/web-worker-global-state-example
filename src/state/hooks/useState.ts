@@ -4,23 +4,40 @@ import {
   useCallback,
   SetStateAction,
   Dispatch,
+  useRef,
 } from "react";
 import { useWorker } from "./useWorker";
 
-export const useState = <T extends unknown>(key: string, initialValue: T) => {
-  const { subscribe, set, get } = useWorker<T>() || {};
-  const [state, setBaseState] = useBaseState<T>(initialValue);
+export const useState = <
+  T extends Record<string, any>,
+  K extends keyof T = keyof T
+>(
+  key: K
+) => {
+  const { subscribe, set, get, initialState } = useWorker<T>() || {};
+  const [state, setBaseState] = useBaseState<T[K]>(initialState?.[key]);
+  const subscribed = useRef(false);
 
-  useEffect(() => {
+  if (!subscribed.current) {
     subscribe?.(key, (data) => {
       setBaseState(data);
     });
-  }, [subscribe, key, setBaseState]);
+    subscribed.current = true;
+  }
+
+  /**
+   * Initialize
+   */
+  useEffect(() => {
+    get?.(key);
+  }, [get, key]);
 
   const setState = useCallback(
-    (value: SetStateAction<T>) => {
+    (value: SetStateAction<T[K]>) => {
       if (value instanceof Function) {
-        set?.(key, value(state));
+        if (state !== undefined) {
+          set?.(key, value(state));
+        }
       } else {
         set?.(key, value);
       }
@@ -28,7 +45,10 @@ export const useState = <T extends unknown>(key: string, initialValue: T) => {
     [set, key, state]
   );
 
-  const value: [T, Dispatch<SetStateAction<T>>] = [state, setState];
+  const value: [T[K] | undefined, Dispatch<SetStateAction<T[K]>>] = [
+    state,
+    setState,
+  ];
 
   return value;
 };

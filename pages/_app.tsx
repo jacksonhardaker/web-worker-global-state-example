@@ -3,9 +3,19 @@ import type { AppProps } from "next/app";
 import "../styles/globals.css";
 import { WorkerProvider } from "../src/state/components/WorkerProvider";
 
+export type State = {
+  count: number;
+  things: string;
+};
+
+export const initialState: State = {
+  count: 0,
+  things: "wow",
+};
+
 const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <WorkerProvider>
+    <WorkerProvider initialState={initialState}>
       <Component {...pageProps} />
     </WorkerProvider>
   );

@@ -3,14 +3,15 @@ import Head from "next/head";
 import Image from "next/image";
 import { useState } from "../src/state/hooks/useState";
 import styles from "../styles/Home.module.css";
+import { State } from "./_app";
 
 const ChildComponent = () => {
-  const [count] = useState("count", 0);
+  const [count] = useState<State, "count">("count");
   return <p>{count}</p>;
 };
 
 const Home: NextPage = () => {
-  const [count, setCount] = useState("count", 0);
+  const [count, setCount] = useState<State, "count">("count");
 
   return (
     <div className={styles.container}>

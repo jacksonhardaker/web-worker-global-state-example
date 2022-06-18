@@ -1,40 +1,57 @@
-import {
-  Dispatch,
-  FC,
-  PropsWithChildren,
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import { PropsWithChildren, useRef, useMemo, useCallback } from "react";
 import { WorkerContext } from "../context";
-import type { Set, Get, Subscribe, WorkerContextType } from "../context";
+import type {
+  Set,
+  Get,
+  Subscribe,
+  WorkerContextType,
+  Action,
+  Subscribers,
+} from "../types";
 
-export const WorkerProvider = <T extends unknown>({
+export const WorkerProvider = <T extends Record<string, any>>({
   children,
-}: PropsWithChildren) => {
-  const [worker, setWorker] = useState<Worker | null>(null);
-  const subscribers = useRef<Record<string, Dispatch<T>[]>>({});
+  initialState,
+}: PropsWithChildren<{
+  initialState: T;
+}>) => {
+  const initialized = useRef(false);
+  // const [worker, setWorker] = useState<Worker | null>(null);
+  const { current: worker } = useRef(
+    (() => {
+      if (
+        typeof window !== "undefined" &&
+        window.Worker &&
+        !initialized.current
+      ) {
+        const w = new Worker("worker.js");
+        w.postMessage(["init", initialState]);
+        initialized.current = true;
+        return w;
+      }
+    })()
+  );
+  const subscribers = useRef<Subscribers<T>>(
+    Object.keys(initialState).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: [],
+      }),
+      {} as Subscribers<T>
+    )
+  );
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.Worker) {
-      setWorker(new Worker("worker.js"));
-    }
-  }, []);
+  if (initialized.current && worker) {
+    worker.onmessage = ({ data }: { data: [Action, keyof T, T[keyof T]] }) => {
+      const [action, key, value] = data;
+      console.log({ action, key, value });
+      if (action === "get" || action === "set") {
+        subscribers?.current?.[key]?.forEach?.((listener) => listener(value));
+      }
+    };
+  }
 
-  useEffect(() => {
-    if (worker) {
-      worker.onmessage = ({ data }) => {
-        const [action, key, value] = data;
-        if (action === "set") {
-          subscribers.current[key].forEach((listener) => listener(value));
-        }
-      };
-    }
-  }, [worker]);
-
-  const get = useCallback<Get>(
+  const get = useCallback<Get<T>>(
     (key) => {
       worker?.postMessage(["get", key]);
     },
@@ -54,12 +71,12 @@ export const WorkerProvider = <T extends unknown>({
 
   const value = useMemo<WorkerContextType<T>>(
     () => ({
-      worker,
       subscribe,
       set,
       get,
+      initialState,
     }),
-    [worker, subscribe, set, get]
+    [subscribe, set, get, initialState]
   );
 
   return (
