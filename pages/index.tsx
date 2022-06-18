@@ -1,17 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import { useState } from "../lib/state/v1/hooks/useState";
+import { useState as useStateV1 } from "@v1/hooks/useState";
 import styles from "../styles/Home.module.css";
-import { State } from "./_app";
+
+const useState = useStateV1;
 
 const ChildComponent = () => {
-  const [count] = useState<State, "count">("count");
+  const [count] = useState("count");
   return <p>{count}</p>;
 };
 
 const Home: NextPage = () => {
-  const [count, setCount] = useState<State, "count">("count");
+  const [count, setCount] = useState("count");
 
   return (
     <div className={styles.container}>
