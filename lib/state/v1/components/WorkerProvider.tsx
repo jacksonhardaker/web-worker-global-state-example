@@ -1,5 +1,5 @@
 import { PropsWithChildren, useRef, useMemo, useCallback } from "react";
-import { WorkerContext } from "../context";
+import { WorkerContext } from "@v1/context";
 import type {
   Set,
   Get,
@@ -7,7 +7,7 @@ import type {
   WorkerContextType,
   Action,
   Subscribers,
-} from "../types";
+} from "@v1/types";
 
 export const WorkerProvider = <T extends Record<string, any>>({
   children,

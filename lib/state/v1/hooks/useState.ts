@@ -6,7 +6,7 @@ import {
   Dispatch,
   useRef,
 } from "react";
-import { useWorker } from "./useWorker";
+import { useWorker } from "@v1/hooks/useWorker";
 
 export const useState = <
   T extends Record<string, any>,

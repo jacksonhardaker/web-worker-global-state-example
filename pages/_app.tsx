@@ -1,7 +1,7 @@
 import type { AppProps } from "next/app";
 
 import "../styles/globals.css";
-import { WorkerProvider as V1 } from "../lib/state/v1/components/WorkerProvider";
+import { WorkerProvider as V1 } from "@v1/components/WorkerProvider";
 
 export const initialState = {
   count: 0,
