@@ -24,7 +24,7 @@ export const WorkerProvider = <T extends Record<string, any>>({
         window.Worker &&
         !initialized.current
       ) {
-        const w = new Worker("worker.js");
+        const w = new Worker("worker/v1.js");
         w.postMessage(["init", initialState]);
         initialized.current = true;
         return w;
