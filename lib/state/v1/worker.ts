@@ -1,6 +1,6 @@
 let state = new Map();
 
-console.log('worker with ts');
+console.log("worker with ts");
 
 onmessage = function ({ data = [] }) {
   const [action, payload] = data;
@@ -25,3 +25,5 @@ onmessage = function ({ data = [] }) {
     }
   }
 };
+
+export {};
