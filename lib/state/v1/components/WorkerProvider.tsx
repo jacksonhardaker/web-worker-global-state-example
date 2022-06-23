@@ -77,7 +77,7 @@ export const WorkerProvider = <T extends Record<string, any>>({
       initialState,
     }),
     [subscribe, set, get, initialState]
-  );
+  ) as unknown as WorkerContextType<Record<string, any>>;
 
   return (
     <WorkerContext.Provider value={value}>{children}</WorkerContext.Provider>
