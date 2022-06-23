@@ -1,5 +1,7 @@
 let state = new Map();
 
+console.log('worker with ts');
+
 onmessage = function ({ data = [] }) {
   const [action, payload] = data;
   console.log({ data });

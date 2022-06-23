@@ -24,7 +24,7 @@ export const WorkerProvider = <T extends Record<string, any>>({
         window.Worker &&
         !initialized.current
       ) {
-        const w = new Worker("worker/v1.js");
+        const w = new Worker(new URL("../worker.ts", import.meta.url));
         w.postMessage(["init", initialState]);
         initialized.current = true;
         return w;
