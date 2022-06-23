@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -16,10 +20,20 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@v1/*": ["lib/state/v1/*"],
-      "@v2/*": ["lib/state/v2/*"]
+      "@v1/*": [
+        "lib/state/v1/*"
+      ],
+      "@v2/*": [
+        "lib/state/v2/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
